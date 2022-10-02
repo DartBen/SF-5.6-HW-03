@@ -5,28 +5,23 @@ internal class Program
     {
         (string firstName, string lastName, int age, bool anyPets, string[] petName, string[] favotireColors) User;
 
-        (User.firstName, User.lastName, User.age) = MainInforfationOfUser();
-        (User.anyPets, User.petName) = PetsOfUser();
-        User.favotireColors= FavotireColorsOfUser();
+        User = UserInformation();
+        PrintOnConsole(User);
 
-
-
-
-
-
-        //string[] favoriteColors = new string[3];
-
-
-        //for (int i = 0; i < favoriteColors.Length; i++)
-        //{
-        //    favoriteColors[i] = ShowColor();
-        //}
-
-
-        //PrintOnConsole(ref User);
         ReadKey();
 
 
+    }
+
+    static (string firstName, string lastName, int age, bool anyPets, string[] petName, string[] favotireColors) UserInformation()
+    {
+        (string firstName, string lastName, int age, bool anyPets, string[] petName, string[] favotireColors) User;
+
+        (User.firstName, User.lastName, User.age) = MainInforfationOfUser();
+        (User.anyPets, User.petName) = PetsOfUser();
+        User.favotireColors = FavotireColorsOfUser();
+
+        return User;
     }
 
     private static (string firstName, string lastName, int age) MainInforfationOfUser()
@@ -34,15 +29,11 @@ internal class Program
         string firstName, lastName, tmpString;
         int age;
 
-        tmpString = "Введите имя: ";
-        firstName = StringConsoleRequest(tmpString);
+        firstName = StringConsoleRequest("Введите имя: ");
 
+        lastName = StringConsoleRequest("Введите фамилию: ");
 
-        tmpString = "Введите фамилию: ";
-        lastName = StringConsoleRequest(tmpString);
-
-        tmpString = "Введите возраст с цифрами: ";
-        age = IntConsoleRequest(tmpString);
+        age = IntConsoleRequest("Введите возраст с цифрами: ");
 
         return (firstName, lastName, age);
     }
@@ -53,10 +44,8 @@ internal class Program
         string[] petName = new string[0];
 
         string tmpString = "";
-        string strA = "да";
-        string strB = "нет";
-        tmpString = $"Есть ли питомцы? {strA}/{strB} : ";
-        tmpString = StringConsoleRequest(tmpString, "да", "нет");
+
+        tmpString = StringConsoleRequest("Есть ли питомцы? да/нет : ", "да", "нет");
 
         if (tmpString == "да")
         {
@@ -69,15 +58,13 @@ internal class Program
 
         if (anyPets)
         {
-            tmpString = "Сколько у вас питомцев?";
-            var petsCount = IntConsoleRequest(tmpString);
+            var petsCount = IntConsoleRequest("Сколько у вас питомцев?");
             petName = new string[petsCount];
         }
 
         for (int i = 0; i <= petName.Length - 1; i++)
         {
-            tmpString = $"Как зовут {i + 1} питомца? ";
-            petName[i] = StringConsoleRequest(tmpString);
+            petName[i] = StringConsoleRequest($"Как зовут {i + 1} питомца? ");
         }
 
         return (anyPets, petName);
@@ -85,29 +72,46 @@ internal class Program
     private static string[] FavotireColorsOfUser()
     {
         string[] favotireColors;
-        string tmpString;
+        //string tmpString;
 
-        tmpString = "Сколько у вас любимых цветов?";
-        var favCount = IntConsoleRequest(tmpString);
+        var favCount = IntConsoleRequest("Сколько у вас любимых цветов?");
         favotireColors = new string[favCount];
 
         for (int i = 0; i <= favotireColors.Length - 1; i++)
         {
-            tmpString = $"{i + 1} любимый цвет: ";
-            favotireColors[i] = StringConsoleRequest(tmpString);
+            favotireColors[i] = StringConsoleRequest($"{i + 1} любимый цвет: ");
         }
         return favotireColors;
     }
 
-    private static void PrintOnConsole(ref (string firstName, string lastName, int age, bool anyPets, string[] petName, string[] favotireColors) User)
+    private static void PrintOnConsole((string firstName, string lastName, int age, bool anyPets, string[] petName, string[] favotireColors) User)
     {
-        //Console.WriteLine($"Ваше имя: {User.firstName}; фамилия: {User.lastName}; возраст: {User.age}");
-        //Console.WriteLine("Ваш возраст: {0}", User.age);
+        WriteLine($"Ваше имя: {User.firstName}; фамилия: {User.lastName}; возраст: {User.age}");
+        WriteLine("Ваш возраст: {0}", User.age);
+
+        if (User.anyPets)
+        {
+            Write("Ваши питомцы: ");
+            foreach (var item in User.petName)
+            {
+                Write(item + " ");
+
+            }
+            WriteLine();
+        }
+        else { WriteLine("Питомцев нет."); }
+
+
+        Write("Ваши любимые цвета: ");
+        foreach (var item in User.favotireColors)
+        {
+            Write(item + " ");
+        }
+        WriteLine();
     }
 
-    private static string StringConsoleRequest(object messageIn)
+    private static string StringConsoleRequest(string message)
     {
-        string message = (string)messageIn;
         string result = "";
         string tmpString;
         bool parseSuccess = false;
@@ -140,12 +144,12 @@ internal class Program
         {
             Write($"{message} ");
             parseSuccess = int.TryParse(Console.ReadLine(), out result);
-            if (!parseSuccess || result == 0)
+            if (!parseSuccess || result <= 0)
             {
                 WriteLine("Ввод некоректный");
             }
         }
-        while (!parseSuccess || result == 0);
+        while (!parseSuccess || result <= 0);
 
         return result;
     }
@@ -157,7 +161,7 @@ internal class Program
         string tmpString;
         bool parseSuccess = false;
         int intTemp;
-        string strATemp= (string)strA;
+        string strATemp = (string)strA;
         string strBTemp = (string)strB;
 
         do
