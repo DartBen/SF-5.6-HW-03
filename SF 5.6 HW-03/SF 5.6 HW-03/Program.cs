@@ -7,12 +7,12 @@ internal class Program
 
         (User.firstName, User.lastName, User.age) = MainInforfationOfUser();
         (User.anyPets, User.petName) = PetsOfUser();
+        User.favotireColors= FavotireColorsOfUser();
 
 
-        //MainInforfationOfUser(ref User.firstName, ref User.firstName, ref User.age);
 
-        //Console.WriteLine($"Ваше имя: {User.firstName}; фамилия: {User.lastName}; возраст: {User.age}");
-        //Console.WriteLine("Ваш возраст: {0}", User.age);
+
+
 
         //string[] favoriteColors = new string[3];
 
@@ -22,19 +22,27 @@ internal class Program
         //    favoriteColors[i] = ShowColor();
         //}
 
+
+        //PrintOnConsole(ref User);
+        ReadKey();
+
+
     }
 
     private static (string firstName, string lastName, int age) MainInforfationOfUser()
     {
-        string firstName, lastName;
+        string firstName, lastName, tmpString;
         int age;
 
-        Write("Введите имя: ");
-        firstName = Console.ReadLine();
-        Write("Введите фамилию: ");
-        lastName = Console.ReadLine();
-        Console.Write("Введите возраст с цифрами:");
-        age = Convert.ToInt32(Console.ReadLine());
+        tmpString = "Введите имя: ";
+        firstName = StringConsoleRequest(tmpString);
+
+
+        tmpString = "Введите фамилию: ";
+        lastName = StringConsoleRequest(tmpString);
+
+        tmpString = "Введите возраст с цифрами: ";
+        age = IntConsoleRequest(tmpString);
 
         return (firstName, lastName, age);
     }
@@ -45,9 +53,10 @@ internal class Program
         string[] petName = new string[0];
 
         string tmpString = "";
-
-        Write("Есть ли питомцы? да/нет : ");
-        tmpString = Console.ReadLine();
+        string strA = "да";
+        string strB = "нет";
+        tmpString = $"Есть ли питомцы? {strA}/{strB} : ";
+        tmpString = StringConsoleRequest(tmpString, "да", "нет");
 
         if (tmpString == "да")
         {
@@ -60,43 +69,118 @@ internal class Program
 
         if (anyPets)
         {
-            Write("Сколько у вас питомцев?");
-            var petsCount = Convert.ToInt32(Console.ReadLine());
-
+            tmpString = "Сколько у вас питомцев?";
+            var petsCount = IntConsoleRequest(tmpString);
             petName = new string[petsCount];
         }
 
         for (int i = 0; i <= petName.Length - 1; i++)
         {
-            string pet = "";
-            Write($"Как зовут {i + 1} питомца? "); ;
-            petName[i] = Console.ReadLine();
+            tmpString = $"Как зовут {i + 1} питомца? ";
+            petName[i] = StringConsoleRequest(tmpString);
         }
 
         return (anyPets, petName);
     }
-    private static void FavotireColorsOfUser(ref string[] favColors)
+    private static string[] FavotireColorsOfUser()
     {
         string[] favotireColors;
-        Write("Сколько у вас любимых цветов?");
-        var favCount = Convert.ToInt32(Console.ReadLine());
-        favotireColors = new string[favCount];
+        string tmpString;
 
+        tmpString = "Сколько у вас любимых цветов?";
+        var favCount = IntConsoleRequest(tmpString);
+        favotireColors = new string[favCount];
 
         for (int i = 0; i <= favotireColors.Length - 1; i++)
         {
-            string pet = "";
-            Write($"{i + 1} любимый цвет: "); ;
-            favotireColors[i] = Console.ReadLine();
+            tmpString = $"{i + 1} любимый цвет: ";
+            favotireColors[i] = StringConsoleRequest(tmpString);
         }
-
-
-
+        return favotireColors;
     }
 
-    private void PrintOn()
+    private static void PrintOnConsole(ref (string firstName, string lastName, int age, bool anyPets, string[] petName, string[] favotireColors) User)
     {
-
+        //Console.WriteLine($"Ваше имя: {User.firstName}; фамилия: {User.lastName}; возраст: {User.age}");
+        //Console.WriteLine("Ваш возраст: {0}", User.age);
     }
 
+    private static string StringConsoleRequest(object messageIn)
+    {
+        string message = (string)messageIn;
+        string result = "";
+        string tmpString;
+        bool parseSuccess = false;
+        int intTemp;
+        do
+        {
+            Write($"{message} ");
+            tmpString = Console.ReadLine();
+            parseSuccess = int.TryParse(tmpString, out intTemp);
+            if (tmpString == "" || parseSuccess)
+            {
+                WriteLine("Ввод некоректный");
+            }
+            else
+            {
+                result = tmpString;
+            }
+        }
+        while (result == "" || parseSuccess);
+
+        return result;
+    }
+
+    private static int IntConsoleRequest(string messageIn)
+    {
+        string message = (string)messageIn;
+        int result = 0;
+        bool parseSuccess = false;
+        do
+        {
+            Write($"{message} ");
+            parseSuccess = int.TryParse(Console.ReadLine(), out result);
+            if (!parseSuccess || result == 0)
+            {
+                WriteLine("Ввод некоректный");
+            }
+        }
+        while (!parseSuccess || result == 0);
+
+        return result;
+    }
+
+    private static string StringConsoleRequest(string messageIn, object strA, object strB)
+    {
+        string message = (string)messageIn;
+        string result = "";
+        string tmpString;
+        bool parseSuccess = false;
+        int intTemp;
+        string strATemp= (string)strA;
+        string strBTemp = (string)strB;
+
+        do
+        {
+            Write($"{message} ");
+            tmpString = Console.ReadLine();
+            parseSuccess = int.TryParse(tmpString, out intTemp);
+
+            if (tmpString == strATemp)
+            {
+                result = tmpString;
+            }
+            else if (tmpString == strBTemp)
+            {
+                result = tmpString;
+            }
+            else
+            {
+                WriteLine("Ввод некоректный");
+            }
+        }
+        while (result == "" || parseSuccess);
+
+        return result;
+    }
 }
